@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Giải Phương Trình Bậc Hai | ax² + bx + c = 0</title>
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: rgba(255,255,255,0.05);
+      --bg-input: rgba(30,41,59,0.7);
+      --border: rgba(255,255,255,0.1);
+      --indigo: #6366f1;
+      --purple: #a855f7;
+      --pink: #ec4899;
+      --emerald: #10b981;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-600: #475569;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+    }
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #4338ca; border-radius: 3px; }
+
+    /* ===== HEADER ===== */
+    .header {
+      position: relative;
+      overflow: hidden;
+      padding: 48px 16px 40px;
+      text-align: center;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(99,102,241,0.15), rgba(168,85,247,0.15), rgba(236,72,153,0.15));
+    }
+
+    .header-inner { position: relative; max-width: 800px; margin: 0 auto; }
+
+    .header-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 80px; height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      box-shadow: 0 20px 40px rgba(99,102,241,0.4);
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(90deg, #a5b4fc, #c084fc, #f9a8d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+
+    .header-formula {
+      font-family: 'Courier New', monospace;
+      font-size: 1.2rem;
+      color: var(--slate-400);
+    }
+
+    .header-sub { font-size: 0.85rem; color: var(--slate-500); margin-top: 6px; }
+
+    /* ===== MAIN CONTAINER ===== */
+    .container { max-width: 760px; margin: 0 auto; padding: 0 16px 60px; }
+
+    /* ===== CARD ===== */
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+      margin-bottom: 24px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--slate-300);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .card-title-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(99,102,241,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+
+    /* ===== EQUATION PREVIEW ===== */
+    .eq-preview {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .eq-preview-box {
+      display: inline-block;
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.35);
+      border-radius: 16px;
+      padding: 10px 28px;
+    }
+
+    .eq-preview-text {
+      font-family: 'Courier New', monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #a5b4fc;
+    }
+
+    /* ===== INPUT GRID ===== */
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--slate-400);
+    }
+
+    .input-label span { font-size: 1rem; font-weight: 700; }
+    .label-a { color: #818cf8; }
+    .label-b { color: #c084fc; }
+    .label-c { color: #f472b6; }
+
+    .input-wrap { position: relative; width: 100%; }
+
+    .input-field {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 12px;
+      text-align: center;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 1.1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -moz-appearance: textfield;
+    }
+
+    .input-field::-webkit-outer-spin-button,
+    .input-field::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .input-field::placeholder { color: var(--slate-600); }
+
+    .input-field:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+    }
+
+    #inp-b:focus { border-color: var(--purple); box-shadow: 0 0 0 3px rgba(168,85,247,0.2); }
+    #inp-c:focus { border-color: var(--pink);   box-shadow: 0 0 0 3px rgba(236,72,153,0.2); }
+
+    .input-badge {
+      position: absolute;
+      top: -9px; right: 10px;
+      font-size: 0.68rem;
+      color: var(--slate-500);
+      background: #0f172a;
+      padding: 0 4px;
+      border-radius: 4px;
+    }
+
+    /* ===== ERROR BOX ===== */
+    .error-box {
+      display: none;
+      margin-bottom: 14px;
+      padding: 12px 16px;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.4);
+      border-radius: 12px;
+      color: #fca5a5;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+    .error-box.show { display: block; }
+
+    /* ===== BUTTONS ===== */
+    .btn-row { display: flex; gap: 12px; }
+
+    .btn-solve {
+      flex: 1;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.05rem;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 24px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+      box-shadow: 0 8px 24px rgba(99,102,241,0.3);
+    }
+
+    .btn-solve:hover { filter: brightness(1.1); transform: scale(1.02); box-shadow: 0 12px 32px rgba(99,102,241,0.45); }
+    .btn-solve:active { transform: scale(0.98); }
+
+    .btn-reset {
+      background: rgba(51,65,85,0.7);
+      color: var(--slate-300);
+      font-weight: 600;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .btn-reset:hover { background: rgba(71,85,105,0.8); transform: scale(1.02); }
+    .btn-reset:active { transform: scale(0.98); }
+
+    .hint { text-align: center; font-size: 0.75rem; color: var(--slate-600); margin-top: 10px; }
+
+    /* ===== EXAMPLES ===== */
+    .examples-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .examples-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--slate-500);
+      display: flex; align-items: center; gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 480px) { .examples-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .ex-btn {
+      text-align: left;
+      background: rgba(30,41,59,0.5);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    }
+
+    .ex-btn:hover {
+      background: rgba(51,65,85,0.7);
+      border-color: rgba(99,102,241,0.45);
+      transform: scale(1.02);
+    }
+
+    .ex-label {
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #a5b4fc;
+      margin-bottom: 4px;
+    }
+
+    .ex-desc { font-size: 0.7rem; color: var(--slate-500); }
+
+    /* ===== RESULT BADGE ===== */
+    .result-badge-wrap { display: flex; justify-content: center; margin-bottom: 8px; }
+
+    .result-badge {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 0.875rem;
+      padding: 8px 24px;
+      border-radius: 999px;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+
+    .badge-two   { background: linear-gradient(135deg, #10b981, #0d9488); }
+    .badge-one   { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+    .badge-none  { background: linear-gradient(135deg, #ef4444, #e11d48); }
+    .badge-linear{ background: linear-gradient(135deg, #f59e0b, #ea580c); }
+    .badge-inf   { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+
+    /* ===== STEPS SECTION ===== */
+    .steps-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 20px 0 14px;
+    }
+
+    .steps-divider::before,
+    .steps-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99,102,241,0.45), transparent);
+    }
+
+    .steps-divider-text {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #818cf8;
+    }
+
+    /* ===== STEP CARDS ===== */
+    .steps-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .step-card {
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border: 1px solid transparent;
+      animation: fadeSlide 0.35s ease both;
+    }
+
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      font-family: 'Courier New', monospace;
+      color: var(--slate-500);
+      margin-top: 2px;
+    }
+
+    .step-body { flex: 1; min-width: 0; }
+
+    .step-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 4px;
+    }
+
+    .step-content {
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      word-break: break-word;
+      line-height: 1.55;
+    }
+
+    @media (min-width: 480px) { .step-content { font-size: 1rem; } }
+
+    /* Normal step */
+    .step-normal {
+      background: rgba(30,41,59,0.5);
+      border-color: rgba(255,255,255,0.07);
+    }
+    .step-normal .step-label  { color: var(--slate-400); }
+    .step-normal .step-content{ color: #cbd5e1; }
+
+    /* Formula step */
+    .step-formula {
+      background: rgba(30,27,75,0.5);
+      border-color: rgba(168,85,247,0.3);
+    }
+    .step-formula .step-label  { color: #c084fc; }
+    .step-formula .step-content{ color: #ddd6fe; }
+
+    /* Highlight step */
+    .step-highlight {
+      background: linear-gradient(135deg, rgba(49,46,129,0.45), rgba(88,28,135,0.35));
+      border-color: rgba(99,102,241,0.45);
+    }
+    .step-highlight .step-label  { color: #a5b4fc; }
+    .step-highlight .step-content{ color: #c7d2fe; font-weight: 600; }
+
+    /* Result step */
+    .step-result {
+      background: linear-gradient(135deg, rgba(6,78,59,0.5), rgba(13,148,136,0.35));
+      border-color: rgba(16,185,129,0.5);
+      box-shadow: 0 4px 20px rgba(16,185,129,0.12);
+    }
+    .step-result .step-label  { color: #6ee7b7; }
+    .step-result .step-content{ color: #a7f3d0; font-weight: 700; font-size: 1.05rem; }
+
+    /* Error step */
+    .step-error {
+      background: linear-gradient(135deg, rgba(127,29,29,0.5), rgba(159,18,57,0.35));
+      border-color: rgba(239,68,68,0.45);
+    }
+    .step-error .step-label  { color: #fca5a5; }
+    .step-error .step-content{ color: #fecaca; font-weight: 600; }
+
+    /* Warning step */
+    .step-warning {
+      background: linear-gradient(135deg, rgba(120,53,15,0.5), rgba(124,45,18,0.35));
+      border-color: rgba(245,158,11,0.45);
+    }
+    .step-warning .step-label  { color: #fcd34d; }
+    .step-warning .step-content{ color: #fde68a; font-weight: 600; }
+
+    /* ===== FOOTER NOTE ===== */
+    .footer-note {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--slate-600);
+      padding: 16px 0 4px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 400px) {
+      .card { padding: 20px 16px; }
+      .input-grid { gap: 10px; }
+      .btn-solve { font-size: 0.95rem; padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-icon">🧮</div>
+    <h1>Giải Phương Trình Bậc Hai</h1>
+    <p class="header-formula">ax² + bx + c = 0</p>
+    <p class="header-sub">Hiển thị đầy đủ các bước giải chi tiết</p>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- INPUT CARD -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-icon">✏️</div>
+      Nhập các hệ số
+    </div>
+
+    <!-- Equation Preview -->
+    <div class="eq-preview" id="preview" style="display:none;">
+      <div class="eq-preview-box">
+        <span class="eq-preview-text" id="preview-text"></span>
+      </div>
+    </div>
+
+    <!-- Inputs -->
+    <div class="input-grid">
+      <div class="input-group">
+        <label class="input-label" for="inp-a">Hệ số <span class="label-a">a</span></label>
+        <div class="input-wrap">
+          <input class="input-field" id="inp-a" type="number" placeholder="Nhập a" />
+          <span class="input-badge">ax²</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="inp-b">Hệ số <span class="label-b">b</span></label>
+        <div class="input-wrap">
+          <input class="input-field" id="inp-b" type="number" placeholder="Nhập b" />
+          <span class="input-badge">bx</span>
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="input-label" for="inp-c">Hệ số <span class="label-c">c</span></label>
+        <div class="input-wrap">
+          <input class="input-field" id="inp-c" type="number" placeholder="Nhập c" />
+          <span class="input-badge">c</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-box" id="error-box"></div>
+
+    <!-- Buttons -->
+    <div class="btn-row">
+      <button class="btn-solve" onclick="handleSolve()">⚡ Giải Phương Trình</button>
+      <button class="btn-reset" onclick="handleReset()">🔄 Làm lại</button>
+    </div>
+    <p class="hint">Nhấn <b>Enter</b> để giải nhanh</p>
+  </div>
+
+  <!-- SOLUTION AREA -->
+  <div id="solution-area"></div>
+
+  <!-- EXAMPLES -->
+  <div class="examples-card" id="examples-card">
+    <div class="examples-title">💡 Ví dụ nhanh</div>
+    <div class="examples-grid">
+      <button class="ex-btn" onclick="loadExample(1,-5,6)">
+        <div class="ex-label">x² − 5x + 6 = 0</div>
+        <div class="ex-desc">2 nghiệm phân biệt</div>
+      </button>
+      <button class="ex-btn" onclick="loadExample(1,2,1)">
+        <div class="ex-label">x² + 2x + 1 = 0</div>
+        <div class="ex-desc">Nghiệm kép</div>
+      </button>
+      <button class="ex-btn" onclick="loadExample(1,0,4)">
+        <div class="ex-label">x² + 4 = 0</div>
+        <div class="ex-desc">Vô nghiệm (Δ &lt; 0)</div>
+      </button>
+      <button class="ex-btn" onclick="loadExample(2,-4,2)">
+        <div class="ex-label">2x² − 4x + 2 = 0</div>
+        <div class="ex-desc">Nghiệm kép</div>
+      </button>
+      <button class="ex-btn" onclick="loadExample(0,3,-9)">
+        <div class="ex-label">3x − 9 = 0</div>
+        <div class="ex-desc">Phương trình bậc nhất</div>
+      </button>
+      <button class="ex-btn" onclick="loadExample(1,-3,-10)">
+        <div class="ex-label">x² − 3x − 10 = 0</div>
+        <div class="ex-desc">2 nghiệm phân biệt</div>
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  /* =============================================
+     UTILITY FUNCTIONS
+  ============================================= */
+  function formatNumber(n) {
+    if (Number.isInteger(n)) return n.toString();
+    return parseFloat(n.toFixed(6)).toString();
+  }
+
+  function gcd(a, b) {
+    a = Math.abs(Math.round(a));
+    b = Math.abs(Math.round(b));
+    return b === 0 ? a : gcd(b, a % b);
+  }
+
+  function formatFraction(numerator, denominator) {
+    if (denominator === 0) return '∞';
+    const result = numerator / denominator;
+    if (Number.isInteger(result)) return result.toString();
+
+    const numR = Math.round(numerator * 1e9);
+    const denR = Math.round(denominator * 1e9);
+    const g = gcd(Math.abs(numR), Math.abs(denR));
+    let sNum = numR / g;
+    let sDen = denR / g;
+
+    if (sDen === 1)  return sNum.toString();
+    if (sDen === -1) return (-sNum).toString();
+
+    const finalNum = sDen < 0 ? -sNum : sNum;
+    const finalDen = Math.abs(sDen);
+    return `${finalNum}/${finalDen}`;
+  }
+
+  function formatCoeff(coeff, variable, isFirst) {
+    if (coeff === 0) return '';
+    if (variable === '') return coeff > 0 ? `+${coeff}` : `${coeff}`;
+
+    let str = '';
+    if (coeff === 1)       str = variable;
+    else if (coeff === -1) str = `-${variable}`;
+    else                   str = `${coeff}${variable}`;
+
+    if (!isFirst && coeff > 0) str = `+${str}`;
+    return str;
+  }
+
+  function formatConst(c) {
+    if (c === 0) return '';
+    return c > 0 ? `+${c}` : `${c}`;
+  }
+
+  function buildEquationDisplay(a, b, c) {
+    let eq = '';
+
+    if (a === 1)       eq += 'x²';
+    else if (a === -1) eq += '-x²';
+    else if (a !== 0)  eq += `${a}x²`;
+
+    if (b === 1)       eq += (eq ? ' + ' : '') + 'x';
+    else if (b === -1) eq += (eq ? ' - ' : '-') + 'x';
+    else if (b > 0)    eq += (eq ? ' + ' : '') + `${b}x`;
+    else if (b < 0)    eq += (eq ? ' - ' : '') + `${Math.abs(b)}x`;
+
+    if (c > 0)      eq += (eq ? ' + ' : '') + `${c}`;
+    else if (c < 0) eq += (eq ? ' - ' : '') + `${Math.abs(c)}`;
+
+    if (!eq) eq = '0';
+    return eq + ' = 0';
+  }
+
+  /* =============================================
+     SOLVER
+  ============================================= */
+  function solve(a, b, c) {
+    const steps = [];
+
+    // Bước 1: Phương trình đã cho
+    steps.push({
+      label: '📋 Phương trình đã cho',
+      content: `${formatCoeff(a,'x²',true)} ${formatCoeff(b,'x')} ${formatConst(c)} = 0`,
+      type: 'formula'
+    });
+
+    // Trường hợp a = 0
+    if (a === 0) {
+      steps.push({
+        label: '⚠️ Kiểm tra hệ số',
+        content: 'Hệ số a = 0 → Đây KHÔNG phải phương trình bậc hai!',
+        type: 'warning'
+      });
+
+      if (b === 0) {
+        if (c === 0) {
+          steps.push({ label: '📌 Phân tích', content: 'a = 0, b = 0, c = 0 → Phương trình trở thành: 0 = 0', type: 'normal' });
+          steps.push({ label: '✅ Kết luận', content: 'Phương trình nghiệm đúng với mọi x ∈ ℝ (phương trình vô số nghiệm).', type: 'result' });
+          return { steps, result: 'identity' };
+        } else {
+          steps.push({ label: '📌 Phân tích', content: `a = 0, b = 0, c = ${c} → Phương trình trở thành: ${c} = 0`, type: 'normal' });
+          steps.push({ label: '❌ Kết luận', content: `Phương trình vô nghiệm (mâu thuẫn: ${c} ≠ 0).`, type: 'error' });
+          return { steps, result: 'no_solution' };
+        }
+      } else {
+        steps.push({
+          label: '📌 Phương trình bậc nhất',
+          content: `a = 0 → Phương trình trở thành: ${formatCoeff(b,'x',true)} ${formatConst(c)} = 0`,
+          type: 'formula'
+        });
+        steps.push({ label: '🔢 Chuyển vế', content: `${formatCoeff(b,'x',true)} = ${-c}`, type: 'normal' });
+        const x = -c / b;
+        steps.push({ label: '📐 Tính x', content: `x = ${-c} ÷ ${b} = ${formatFraction(-c, b)} = ${formatNumber(x)}`, type: 'normal' });
+        steps.push({ label: '✅ Kết luận', content: `Phương trình có nghiệm duy nhất: x = ${formatNumber(x)}`, type: 'result' });
+        return { steps, result: 'linear' };
+      }
+    }
+
+    // Phương trình bậc 2 thực sự
+    steps.push({ label: '✅ Xác nhận bậc phương trình', content: `a = ${a} ≠ 0 → Đây là phương trình bậc hai.`, type: 'normal' });
+    steps.push({ label: '🔢 Xác định các hệ số', content: `a = ${a}   |   b = ${b}   |   c = ${c}`, type: 'highlight' });
+
+    // Tính Delta
+    const delta = b * b - 4 * a * c;
+    steps.push({ label: '📐 Công thức tính Δ (Delta)', content: 'Δ = b² − 4ac', type: 'formula' });
+    steps.push({ label: '🧮 Thay số vào Δ', content: `Δ = (${b})² − 4 × (${a}) × (${c})`, type: 'normal' });
+    steps.push({ label: '🧮 Tính toán từng phần', content: `Δ = ${b*b} − (${4*a*c})`, type: 'normal' });
+    steps.push({ label: '🧮 Kết quả Δ', content: `Δ = ${formatNumber(delta)}`, type: 'highlight' });
+
+    if (delta < 0) {
+      steps.push({ label: '🔍 Xét dấu Δ', content: `Δ = ${formatNumber(delta)} < 0`, type: 'error' });
+      steps.push({ label: '❌ Kết luận', content: 'Vì Δ < 0, phương trình VÔ NGHIỆM trong tập số thực ℝ.', type: 'error' });
+      return { steps, result: 'no_root' };
+    }
+
+    if (delta === 0) {
+      steps.push({ label: '🔍 Xét dấu Δ', content: 'Δ = 0 → Phương trình có nghiệm kép.', type: 'highlight' });
+      steps.push({ label: '📐 Công thức nghiệm kép', content: 'x₁ = x₂ = −b / (2a)', type: 'formula' });
+      steps.push({ label: '🧮 Thay số', content: `x₁ = x₂ = −(${b}) / (2 × ${a}) = ${-b} / ${2*a}`, type: 'normal' });
+
+      const x0 = -b / (2 * a);
+      steps.push({ label: '✅ Nghiệm kép', content: `x₁ = x₂ = ${formatFraction(-b, 2*a)} = ${formatNumber(x0)}`, type: 'result' });
+
+      // Kiểm tra lại
+      const check = a * x0 * x0 + b * x0 + c;
+      steps.push({ label: '🔎 Kiểm tra (thế nghiệm vào PT)', content: `Thế x = ${formatNumber(x0)}: ${a}×(${formatNumber(x0)})² + ${b}×${formatNumber(x0)} + ${c} = ${formatNumber(check)} ✓`, type: 'normal' });
+
+      return { steps, result: 'one_root' };
+    }
+
+    // Delta > 0
+    const sqrtDelta = Math.sqrt(delta);
+    steps.push({ label: '🔍 Xét dấu Δ', content: `Δ = ${formatNumber(delta)} > 0 → Phương trình có hai nghiệm phân biệt.`, type: 'highlight' });
+    steps.push({ label: '📐 Tính √Δ', content: `√Δ = √${formatNumber(delta)} = ${formatNumber(sqrtDelta)}`, type: 'formula' });
+    steps.push({ label: '📐 Công thức nghiệm', content: 'x₁ = (−b − √Δ) / (2a)     x₂ = (−b + √Δ) / (2a)', type: 'formula' });
+
+    // Tính x1
+    steps.push({ label: '🧮 Tính x₁', content: `x₁ = (−(${b}) − ${formatNumber(sqrtDelta)}) / (2 × ${a})`, type: 'normal' });
+    steps.push({ label: '🧮 Tính x₁ (tiếp)', content: `x₁ = (${-b} − ${formatNumber(sqrtDelta)}) / ${2*a} = ${formatNumber(-b - sqrtDelta)} / ${2*a}`, type: 'normal' });
+    const x1 = (-b - sqrtDelta) / (2 * a);
+    steps.push({ label: '✅ Kết quả x₁', content: `x₁ = ${formatNumber(x1)}`, type: 'result' });
+
+    // Tính x2
+    steps.push({ label: '🧮 Tính x₂', content: `x₂ = (−(${b}) + ${formatNumber(sqrtDelta)}) / (2 × ${a})`, type: 'normal' });
+    steps.push({ label: '🧮 Tính x₂ (tiếp)', content: `x₂ = (${-b} + ${formatNumber(sqrtDelta)}) / ${2*a} = ${formatNumber(-b + sqrtDelta)} / ${2*a}`, type: 'normal' });
+    const x2 = (-b + sqrtDelta) / (2 * a);
+    steps.push({ label: '✅ Kết quả x₂', content: `x₂ = ${formatNumber(x2)}`, type: 'result' });
+
+    // Kiểm tra Viète
+    const sum = x1 + x2;
+    const product = x1 * x2;
+    const expSum = -b / a;
+    const expProd = c / a;
+    steps.push({ label: '🔎 Kiểm tra theo định lý Viète', content: 'x₁ + x₂ = −b/a     |     x₁ × x₂ = c/a', type: 'formula' });
+    steps.push({
+      label: '🧮 Kiểm tra tổng nghiệm',
+      content: `x₁ + x₂ = ${formatNumber(x1)} + ${formatNumber(x2)} = ${formatNumber(sum)}   ←→   −b/a = −(${b})/${a} = ${formatNumber(expSum)}   ✓`,
+      type: 'normal'
+    });
+    steps.push({
+      label: '🧮 Kiểm tra tích nghiệm',
+      content: `x₁ × x₂ = ${formatNumber(x1)} × ${formatNumber(x2)} = ${formatNumber(product)}   ←→   c/a = ${c}/${a} = ${formatNumber(expProd)}   ✓`,
+      type: 'normal'
+    });
+
+    return { steps, result: 'two_roots' };
+  }
+
+  /* =============================================
+     RENDER FUNCTIONS
+  ============================================= */
+  function getBadgeInfo(result) {
+    const map = {
+      two_roots:   { text: '📊 Hai nghiệm phân biệt', cls: 'badge-two' },
+      one_root:    { text: '📊 Nghiệm kép',           cls: 'badge-one' },
+      no_root:     { text: '📊 Vô nghiệm (Δ < 0)',    cls: 'badge-none' },
+      linear:      { text: '📊 Phương trình bậc nhất',cls: 'badge-linear' },
+      identity:    { text: '📊 Vô số nghiệm',         cls: 'badge-inf' },
+      no_solution: { text: '📊 Vô nghiệm',            cls: 'badge-none' }
+    };
+    return map[result] || null;
+  }
+
+  function renderSolution(solution) {
+    const badge = getBadgeInfo(solution.result);
+    let html = '';
+
+    // Badge
+    if (badge) {
+      html += `<div class="result-badge-wrap">
+        <div class="result-badge ${badge.cls}">${badge.text}</div>
+      </div>`;
+    }
+
+    // Divider
+    html += `<div class="steps-divider">
+      <span class="steps-divider-text">Các bước giải</span>
+    </div>`;
+
+    // Steps
+    html += '<div class="steps-list">';
+    solution.steps.forEach(function(step, i) {
+      const cls = {
+        normal:    'step-normal',
+        formula:   'step-formula',
+        highlight: 'step-highlight',
+        result:    'step-result',
+        error:     'step-error',
+        warning:   'step-warning'
+      }[step.type] || 'step-normal';
+
+      html += `<div class="step-card ${cls}" style="animation-delay:${i * 45}ms">
+        <div class="step-num">${i + 1}</div>
+        <div class="step-body">
+          <div class="step-label">${step.label}</div>
+          <div class="step-content">${step.content}</div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+
+    html += '<div class="footer-note">✨ Giải xong — Nhập hệ số mới để giải phương trình khác</div>';
+
+    document.getElementById('solution-area').innerHTML = html;
+    document.getElementById('examples-card').style.display = 'none';
+
+    // Scroll to solution
+    setTimeout(function() {
+      document.getElementById('solution-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
+  /* =============================================
+     EVENT HANDLERS
+  ============================================= */
+  function showError(msg) {
+    const el = document.getElementById('error-box');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  function hideError() {
+    document.getElementById('error-box').classList.remove('show');
+  }
+
+  function handleSolve() {
+    const aStr = document.getElementById('inp-a').value.trim();
+    const bStr = document.getElementById('inp-b').value.trim();
+    const cStr = document.getElementById('inp-c').value.trim();
+
+    if (aStr === '' || bStr === '' || cStr === '') {
+      showError('⚠️ Vui lòng nhập đầy đủ các hệ số a, b và c!');
+      document.getElementById('solution-area').innerHTML = '';
+      document.getElementById('examples-card').style.display = '';
+      return;
+    }
+
+    const a = parseFloat(aStr);
+    const b = parseFloat(bStr);
+    const c = parseFloat(cStr);
+
+    if (isNaN(a) || isNaN(b) || isNaN(c)) {
+      showError('⚠️ Các hệ số phải là số hợp lệ!');
+      document.getElementById('solution-area').innerHTML = '';
+      document.getElementById('examples-card').style.display = '';
+      return;
+    }
+
+    hideError();
+    const solution = solve(a, b, c);
+    renderSolution(solution);
+  }
+
+  function handleReset() {
+    document.getElementById('inp-a').value = '';
+    document.getElementById('inp-b').value = '';
+    document.getElementById('inp-c').value = '';
+    hideError();
+    document.getElementById('solution-area').innerHTML = '';
+    document.getElementById('examples-card').style.display = '';
+    document.getElementById('preview').style.display = 'none';
+    document.getElementById('inp-a').focus();
+  }
+
+  function loadExample(a, b, c) {
+    document.getElementById('inp-a').value = a;
+    document.getElementById('inp-b').value = b;
+    document.getElementById('inp-c').value = c;
+    hideError();
+    updatePreview();
+    handleSolve();
+  }
+
+  /* ===== LIVE PREVIEW ===== */
+  function updatePreview() {
+    const aStr = document.getElementById('inp-a').value.trim();
+    const bStr = document.getElementById('inp-b').value.trim();
+    const cStr = document.getElementById('inp-c').value.trim();
+    const a = parseFloat(aStr), b = parseFloat(bStr), c = parseFloat(cStr);
+
+    if (aStr !== '' && bStr !== '' && cStr !== '' && !isNaN(a) && !isNaN(b) && !isNaN(c)) {
+      document.getElementById('preview-text').textContent = buildEquationDisplay(a, b, c);
+      document.getElementById('preview').style.display = '';
+    } else {
+      document.getElementById('preview').style.display = 'none';
+    }
+  }
+
+  /* ===== KEYBOARD ===== */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') handleSolve();
+  });
+
+  /* ===== INPUT LISTENERS ===== */
+  ['inp-a', 'inp-b', 'inp-c'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', updatePreview);
+  });
+</script>
+</body>
+</html>
